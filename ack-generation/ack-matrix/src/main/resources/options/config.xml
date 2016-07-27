@@ -1,0 +1,36 @@
+<Configuration>
+	<Categories>
+		<Category>
+			<DisplayName>Required Usage</DisplayName>
+			<ReportID>R_USAGE</ReportID>
+			<Initialization>
+				<Case>
+					<Condition ElementAttribute="Usage" Value="R">
+						<Value>Error</Value>
+					</Condition>
+					<Otherwise>
+						<Value>NoShow</Value>
+					</Otherwise>
+				</Case>
+			</Initialization>
+		</Category>
+		<Category>
+			<DisplayName>Cardinality</DisplayName>
+			<ReportID>Cardinality</ReportID>
+			<Initialization>
+				<Case>
+					<Condition ElementAttribute="Max" Value="*" negate="true">
+						<Value>Error</Value>
+					</Condition>
+					<Condition ElementAttribute="Min" Value="1" negate="true">
+						<Value>Error</Value>
+					</Condition>
+					<Otherwise>
+						<Value>NoShow</Value>
+					</Otherwise>
+				</Case>
+			</Initialization>
+		</Category>
+	</Categories>
+</Configuration>
+<!-- NoShow = 0; Info = 1; Warning = 2; Error = 3 -->
