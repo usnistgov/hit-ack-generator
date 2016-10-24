@@ -14,6 +14,7 @@ public class Field extends Element {
 	
 	public Field(String name, Req req, String path, String internalPath) {
 		super(name, req, path, internalPath);
+		this.setType("FIELD");
 		// TODO Auto-generated constructor stub
 	}
 
@@ -45,5 +46,13 @@ public class Field extends Element {
 	public int nbChildren() {
 		// TODO Auto-generated method stub
 		return components.size();
+	}
+
+	public ElementView getView() {
+		ElementView ev = super.getView("FIELD");
+		for(Component f : components){
+			ev.addChild(f.getView());
+		}
+		return ev;
 	}
 }

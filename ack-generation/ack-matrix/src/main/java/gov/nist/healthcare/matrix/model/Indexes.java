@@ -6,7 +6,15 @@ import org.json.JSONObject;
 
 public class Indexes {
 	public HashMap<String, Severity> map = new HashMap<String, Severity>();
-
+	
+	public HashMap<String, Integer> simplifiedMap(){
+		HashMap<String, Integer> mp = new HashMap<String, Integer>();
+		for(String key : map.keySet()){
+			mp.put(key, map.get(key).ordinal() - 1);
+		}
+		return mp;
+	}
+	
 	public JSONObject toJSON() {
 		JSONObject obj = new JSONObject();
 		for(String key : map.keySet()){

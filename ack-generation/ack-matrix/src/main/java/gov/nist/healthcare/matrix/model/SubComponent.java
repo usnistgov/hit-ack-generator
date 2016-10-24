@@ -10,6 +10,7 @@ public class SubComponent extends Element {
 	
 	public SubComponent(String name, Req req, String path, String internalPath) {
 		super(name, req, path, internalPath);
+		this.setType("SUBSEGMENT");
 		// TODO Auto-generated constructor stub
 	}
 
@@ -30,6 +31,11 @@ public class SubComponent extends Element {
 	public int nbChildren() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public ElementView getView() {
+		ElementView ev = super.getView("SUBCOMPONENT");
+		return ev;
 	}
 
 }

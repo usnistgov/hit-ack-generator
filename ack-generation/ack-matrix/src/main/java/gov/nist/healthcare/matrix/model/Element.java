@@ -18,6 +18,7 @@ public abstract class Element implements HL7Element {
 	private int position;
 	private String internalPath;
 	private Indexes indexes;
+	private String type;
 	private boolean vs;
 	
 	public JSONObject toJSON(String type){
@@ -28,7 +29,22 @@ public abstract class Element implements HL7Element {
 		obj.put("description", description);
 		obj.put("path", path);
 		obj.put("indexes", indexes.toJSON());
+		obj.put("usage", usage);
+		obj.put("valueSet", vs);
 		return obj;
+	}
+	
+	public ElementView getView(String type){
+		ElementView ev = new ElementView();
+		ev.setName(name);
+		ev.setDescription(description);
+		ev.setType(type);
+		ev.setID(internalPath);
+		ev.setPath(path);
+		ev.setIndexes(indexes.simplifiedMap());
+		ev.setUsage(this.usage);
+		ev.setValueSet(this.vs);
+		return ev;
 	}
 	
 	public Element(){
@@ -147,5 +163,14 @@ public abstract class Element implements HL7Element {
 	public void setVs(boolean vs) {
 		this.vs = vs;
 	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+	
 	
 }

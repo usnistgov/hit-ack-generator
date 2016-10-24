@@ -14,6 +14,7 @@ public class Component extends Element {
 	
 	public Component(String name, Req req, String path, String internal) {
 		super(name, req, path, internal);
+		this.setType("COMPONENT");
 		// TODO Auto-generated constructor stub
 	}
 
@@ -45,5 +46,13 @@ public class Component extends Element {
 	public int nbChildren() {
 		// TODO Auto-generated method stub
 		return subComponents.size();
+	}
+
+	public ElementView getView() {
+		ElementView ev = super.getView("COMPONENT");
+		for(SubComponent f : subComponents){
+			ev.addChild(f.getView());
+		}
+		return ev;
 	}
 }

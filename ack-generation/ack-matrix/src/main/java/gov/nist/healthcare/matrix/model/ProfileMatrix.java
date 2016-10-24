@@ -13,8 +13,23 @@ public class ProfileMatrix implements Matrix {
 	private ArrayList<String> headers = new ArrayList<String>();
 	private Message message;
 
+	public HashMap<String, String> getIndex() {
+		return index;
+	}
+
+	public void setIndex(HashMap<String, String> index) {
+		this.index = index;
+	}
+
+	public ArrayList<String> getHeaders() {
+		return headers;
+	}
+
+	public void setHeaders(ArrayList<String> headers) {
+		this.headers = headers;
+	}
+
 	public void init() {
-		
 		Initializer.initialize(this);
 	}
 	
@@ -66,6 +81,13 @@ public class ProfileMatrix implements Matrix {
 		obj.put("header", this.headers);
 		obj.put("message", message.toJSON());
 		return obj.toString();
+	}
+	
+	public MatrixView getView(){
+		MatrixView mv = new MatrixView();
+		mv.setHeader(this.headers);
+		mv.setMessage(message.getView());
+		return mv;
 	}
 
 	public void editElement(String path, HL7Element newElement) {

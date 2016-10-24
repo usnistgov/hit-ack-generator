@@ -1,5 +1,7 @@
 package gov.nist.healthcare.acknowledgement.model;
 
+import gov.nist.healthcare.matrix.common.Utils;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,22 +16,33 @@ public class HL7Path {
 	
 	
 	public HL7Path(String path){
-		Matcher m = pHL7path.matcher(path);
-		if(m.find()){
-			segName   = m.group(1);
-			segSeq    = m.group(2) == null ? -1 : Integer.parseInt(m.group(2));
-			fieldId   = m.group(3) == null ? -1 : Integer.parseInt(m.group(3));
-			fieldSeq  = m.group(4) == null ? -1 : Integer.parseInt(m.group(4));
-			compId    = m.group(5) == null ? -1 : Integer.parseInt(m.group(5));
-			subCompId = m.group(6) == null ? -1 : Integer.parseInt(m.group(6));
-		}
-		else {
+		String simplePath = Utils.simplifyPath(path);
+		if((simplePath.length() > 3 && Utils.simplifyPath(path).charAt(3) != '-') || simplePath.length() < 3){
 			segName   = "";
 			segSeq    = -1;
 			fieldId   = -1;
 			fieldSeq  = -1;
 			compId    = -1;
 			subCompId = -1;
+		}
+		else {
+			Matcher m = pHL7path.matcher(path);
+			if(m.find()){
+				segName   = m.group(1);
+				segSeq    = m.group(2) == null ? -1 : Integer.parseInt(m.group(2));
+				fieldId   = m.group(3) == null ? -1 : Integer.parseInt(m.group(3));
+				fieldSeq  = m.group(4) == null ? -1 : Integer.parseInt(m.group(4));
+				compId    = m.group(5) == null ? -1 : Integer.parseInt(m.group(5));
+				subCompId = m.group(6) == null ? -1 : Integer.parseInt(m.group(6));
+			}
+			else {
+				segName   = "";
+				segSeq    = -1;
+				fieldId   = -1;
+				fieldSeq  = -1;
+				compId    = -1;
+				subCompId = -1;
+			}
 		}
 	}
 	

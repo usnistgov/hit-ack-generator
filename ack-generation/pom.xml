@@ -10,5 +10,6 @@
   	<module>ack-matrix</module>
     <module>ack-generator</module>
     <module>ack-matrix-editor</module>
+    <module>ack-webapp</module>
   </modules>
 </project>

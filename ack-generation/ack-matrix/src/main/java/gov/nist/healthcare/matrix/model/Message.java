@@ -16,6 +16,7 @@ public class Message {
 		this.desc = desc;
 	}
 
+
 	public HL7Element getChild(int i) {
 		if(i < segmentOrGroup.size())
 			return segmentOrGroup.get(i);
@@ -56,6 +57,16 @@ public class Message {
 
 	public void setDesc(String desc) {
 		this.desc = desc;
+	}
+
+	public MessageView getView() {
+		MessageView mv = new MessageView();
+		mv.setId(id);
+		mv.setDesc(desc);
+		for(SegmentOrGroup sg : segmentOrGroup){
+			mv.addChild(sg.getView());
+		}
+		return mv;
 	}
 	
 	

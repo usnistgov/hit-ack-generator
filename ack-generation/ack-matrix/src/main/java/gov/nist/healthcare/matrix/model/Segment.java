@@ -15,6 +15,7 @@ public class Segment extends Element implements SegmentOrGroup  {
 	
 	public Segment(String name, Req req, String path, String internalPath) {
 		super(name, req, path, internalPath);
+		this.setType("SEGMENT");
 		// TODO Auto-generated constructor stub
 	}
 
@@ -37,6 +38,14 @@ public class Segment extends Element implements SegmentOrGroup  {
 			arr.put(f.toJSON());
 		}
 		obj.put("children", arr);
+		return obj;
+	}
+	
+	public ElementView getView() {
+		ElementView obj = super.getView("SEGMENT");
+		for(Field f : fields){
+			obj.addChild(f.getView());
+		}
 		return obj;
 	}
 

@@ -18,6 +18,7 @@ public interface HL7Element {
 	public String getInternalPath();
 	public void setInternalPath(String internalPath);
 	public JSONObject toJSON();
+	public ElementView getView();
 	public String getUsage();
 	public void setUsage(String usage);
 	public String getConfLength();
@@ -30,4 +31,6 @@ public interface HL7Element {
 	public void setVs(boolean vs);
 	public boolean isSimple();
 	public int nbChildren();
+	public String getType();
+	public void setType(String type);
 }

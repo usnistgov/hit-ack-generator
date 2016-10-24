@@ -5,14 +5,14 @@ public class Initializer {
 	public static void initialize(ProfileMatrix mtx){
 		Message m = mtx.getMessage();
 		for(int i = 0; i < m.size(); i++){
-			browse(m.getChild(i));
+			browse(m.getChild(i),false);
 		}
 	}
 	
-	public static void browse(HL7Element elm){
-		elm.setIndexes(indexes(usage(elm),cardinality(elm),length(elm),format(elm),4,vs(elm),4));
+	public static void browse(HL7Element elm, boolean fatherIsVs){
+		elm.setIndexes(indexes(usage(elm),cardinality(elm),length(elm),format(elm),4,vs(elm,fatherIsVs),4));
 		for(int i = 0; i < elm.nbChildren(); i++){
-			browse(elm.getChild(i));
+			browse(elm.getChild(i),elm.isVs() && elm.getType().equals("FIELD"));
 		}
 	}
 	
@@ -55,17 +55,17 @@ public class Initializer {
 			return 0;
 	}
 	
-	public static int vs(HL7Element e){
-		if(e.isVs())
+	public static int vs(HL7Element e, boolean parent){
+		if(e.isVs() || parent)
 			return 4;
 		else
 			return 0;
 	}
 	
 	public static int length(HL7Element e){
-		if(e.getConfLength() != null)
+		if(e.getConfLength() != null || e.getLength() != null)
 			return 4;
-		else
+		else 
 			return 0;
 	}
 }

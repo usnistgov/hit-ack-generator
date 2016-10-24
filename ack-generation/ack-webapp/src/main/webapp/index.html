@@ -1,0 +1,104 @@
+<!doctype html> <html> <head> <meta charset="utf-8"> <title></title> <meta name="description" content=""> <meta name="viewport" content="width=device-width"> <!-- Place favicon.ico and apple-touch-icon.png in the root directory --> <link rel="stylesheet" href="styles/vendor.2ac5f564.css"> <link rel="stylesheet" href="styles/main.e7e97240.css"> <link rel="stylesheet" href="lib/angular-treetable/style/jquery.treetable.css"> <link rel="stylesheet" href="lib/angular-treetable/style/jquery.treetable.theme.default.css"> <script src="lib/codemirror/lib/codemirror.js"></script> <script src="lib/codemirror/lib/formating.js"></script> <script src="lib/codemirror/mode/edi.js"></script> <script src="lib/codemirror/mode/xml.js"></script> <script src="lib/codemirror/mode/hl7v2.js"></script> <link rel="stylesheet" href="lib/codemirror/lib/codemirror.css"> <link rel="stylesheet" href="lib/codemirror/theme/elegant.css"> </head> <body ng-app="webappApp"> <div ng-include="'views/header.html'"></div> <div ng-controller="IntegrationcontrollerCtrl as ic" style="margin-top: 10px; margin-left: 10px; margin-right: 10px" ng-init="ic.initCodemirror()"> <div class="row"> <!-- 			<div class="col-md-2"> --> <!-- 				<uib-accordion close-others="oneAtATime"> --> <!-- 				<div uib-accordion-group class="panel panel-info" heading="Profiles"> --> <!-- 				</div> --> <!-- 				</uib-accordion> --> <!-- 			</div> --> <div class="col-md-12"> <div class="panel panel-info"> <div class="panel-heading panel-heading-collapsable"> <i class="fa fa-list"> </i>Profile : VXU-Z22 </div> <div class="panel-body"> <ul class="nav nav-tabs"> <li ng-click="ic.setActive(0)" ng-class="{active : ic.isActive(0)}"><a> <tab-heading> Matrix Editor </tab-heading> </a></li> <li ng-click="ic.setActive(1)" ng-class="{active : ic.isActive(1)}"><a> <tab-heading> Ack Generation </tab-heading> </a></li> <li ng-click="ic.setActive(2)" ng-class="{active : ic.isActive(2)}"><a> <tab-heading> Report </tab-heading> </a></li> </ul> <div ng-show="ic.isActive(0)"> <div class="panel panel-info"> <div class="panel-heading panel-heading-collapsable"> Matrix Editor </div> <div class="panel-body"> <matrix-editor matrix="mtx" headers="headers"></matrix-editor> </div> </div> </div> <div ng-show="ic.isActive(1)"> <div class="panel panel-info"> <div class="panel-heading panel-heading-collapsable"> Message Editor <button ng-click="validate()" class="btn btn-xs btn-info pull-right"> Generate Ack</button> </div> <div class="panel-body"> <textarea type="cf" name="cfTextArea1" rows="15" wrap="off" style="overflow:auto" id="cfTextArea1" ng-bind="ic.message"></textarea> </div> </div> <div class="panel panel-info"> <div class="panel-heading panel-heading-collapsable"> Acknowledgement Message </div> <div class="panel-body"> <textarea rows="15" name="cfTextArea2" id="cfTextArea2" class="well" style="width: 100%" ng-model="rsp"></textarea> </div> </div> </div> <div ng-show="ic.isActive(2)"> <div ng-bind-html="report | sanitize"></div> </div> </div> </div> </div> </div> </div> <script src="scripts/vendor.b89c7e3f.js"></script> <script src="lib/angular-treetable/jquery.treetable.js"></script> <script src="lib/angular-treetable/angular-treetable.js"></script> <script src="scripts/scripts.71138e73.js"></script> <script type="text/ng-template" id="tree_node"><tr tt-node is-branch="meCtrl.isExpandable(node)">
+		<td><span ng-class="meCtrl.labelClass(node)" class="label label-icon">
+				{{meCtrl.labelText(node)}} </span> <span ng-bind="node.path"></span></td>
+		<td ng-bind="node.name"></td>
+		<td ng-bind="node.usage"></td>
+		<td style="padding : 0;" ng-repeat="head in meCtrl.headers">
+			<select ng-hide="meCtrl.getValue(node,head) == -1" ng-class="meCtrl.cellClass(meCtrl.getValue(node,head))" style="text-align : center; width : 100%; height : 30px;" class="form-control danger" name="singleSelect" ng-model="node.indexes[head]" convert-to-number>
+				<option style="text-align : center; color : white; background-color : gray;" value="0" ng-selected="node.indexes[head]===0">Ignore</option>
+				<option style="text-align : center; color : white; background-color : blue;" value="1" ng-selected="node.indexes[head]===1">Information</option>
+				<option style="text-align : center; color : white; background-color : orange;" value="2" ng-selected="node.indexes[head]===2">Warning</option>
+				<option style="text-align : center; color : white; background-color : red;" value="3" ng-selected="node.indexes[head]===3">Error</option>
+			</select>
+		</td>
+	</tr></script> <script type="text/ng-template" id="me"><div>
+		<table tt-table tt-params="meCtrl.dynamic_params"
+			class="table table-bordered table-condensed pvt table-precise-border table-fix-header profile-table ng-isolate-scope treetable">
+			<thead>
+				<tr class="tbl-header">
+					<th>Path</th>
+					<th>Name</th>
+					<th>Usage</th>
+					<th ng-repeat="head in meCtrl.headers">{{head}} <span
+						ng-click="meCtrl.clear(meCtrl.dynamic_params.getNodes(),head)"
+						style="color: red;"
+						class="glyphicon glyphicon-remove pull-right danger"
+						aria-hidden="true"></span>
+					</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6">
+			<table class="table table-bordered table-condensed">
+				<thead>
+					<th></th>
+					<th colspan=2>Parameter</th>
+				</thead>
+				<tr>
+					<td><input type="radio" name="param" ng-model="meCtrl.a"
+						value="usage"></td>
+					<td>Usage</td>
+					<td><select
+						style="text-align: center; width: 100%; height: 30px;"
+						class="form-control" ng-model="meCtrl.usageS"
+						ng-disabled="meCtrl.a !== 'usage'">
+							<option value="R">R</option>
+							<option value="RE">RE</option>
+							<option value="C">C</option>
+							<option value="X">X</option>
+							<option value="W">W</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td><input type="radio" name="param" ng-model="meCtrl.a"
+						value="path"></td>
+					<td>Path</td>
+					<td><input ng-model="meCtrl.path" type="text"
+						class="form-control" ng-disabled="meCtrl.a !== 'path'"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="col-md-6">
+			<table class="table table-bordered table-condensed col-md-6">
+				<thead>
+					<th colspan=2>Action</th>
+				</thead>
+				<tr>
+					<td>Category</td>
+					<td><select
+						style="text-align: center; width: 100%; height: 30px;"
+						class="form-control danger" name="singleSelectD"
+						ng-model="meCtrl.categ">
+							<option style="text-align: center;"
+								ng-repeat="head in meCtrl.headers" value="{{head}}">
+								{{head}}</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td>Set To</td>
+					<td><select
+						style="text-align: center; width: 100%; height: 30px;"
+						class="form-control danger" name="singleSelectD"
+						ng-model="meCtrl.setTo" convert-to-number>
+							<option
+								style="text-align: center; color: white; background-color: gray;"
+								value="0">Ignore</option>
+							<option
+								style="text-align: center; color: white; background-color: blue;"
+								value="1">Information</option>
+							<option
+								style="text-align: center; color: white; background-color: orange;"
+								value="2">Warning</option>
+							<option
+								style="text-align: center; color: white; background-color: red;"
+								value="3">Error</option>
+					</select></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<button ng-click="meCtrl.edit()" class="btn btn-warning pull-left">Edit</button></script> </body> </html>

@@ -14,6 +14,7 @@ public class Group extends Element implements SegmentOrGroup {
 	
 	public Group(String name, Req req, String path, String internalPath) {
 		super(name, req, path, internalPath);
+		this.setType("GROUP");
 		// TODO Auto-generated constructor stub
 	}
 
@@ -34,6 +35,14 @@ public class Group extends Element implements SegmentOrGroup {
 			arr.put(f.toJSON());
 		}
 		obj.put("children", arr);
+		return obj;
+	}
+	
+	public ElementView getView() {
+		ElementView obj = super.getView("GROUP");
+		for(SegmentOrGroup f : segmentOrGroup){
+			obj.addChild(f.getView());
+		}
 		return obj;
 	}
 

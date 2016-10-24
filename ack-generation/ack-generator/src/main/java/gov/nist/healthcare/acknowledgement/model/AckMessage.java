@@ -1,8 +1,8 @@
 package gov.nist.healthcare.acknowledgement.model;
 
-import java.util.ArrayList;
+import gov.nist.healthcare.matrix.model.Severity;
 
-import javax.print.attribute.standard.Severity;
+import java.util.ArrayList;
 
 public class AckMessage {
 	
@@ -10,6 +10,7 @@ public class AckMessage {
 	private String ackCode;
 	private boolean hasError;
 	private boolean hasWarning;
+	private MessageHeader header;
 	
 	private ArrayList<ErrSegment> err;
 	
@@ -17,6 +18,7 @@ public class AckMessage {
 		err = new ArrayList<ErrSegment>();
 		hasError = false;
 		hasWarning = false;
+		ackCode = "AA";
 	}
 	
 	public String getMsgControlId() {
@@ -36,13 +38,23 @@ public class AckMessage {
 		this.err = err;
 	}
 	
+	
+	
+	public MessageHeader getHeader() {
+		return header;
+	}
+
+	public void setHeader(MessageHeader header) {
+		this.header = header;
+	}
+
 	public void addErr(ErrSegment err) {
-		
-		if(!hasError && err.getSeverity() == Severity.ERROR.getValue()){
+
+		if(!hasError && (err.getSeverity() + 1) == Severity.Error.ordinal()){
 			hasError = true;
 		}
 		
-		if(!hasWarning && err.getSeverity() == Severity.WARNING.getValue()){
+		if(!hasWarning && (err.getSeverity() + 1) == Severity.Warning.ordinal()){
 			hasWarning = true;
 		}
 		
@@ -57,7 +69,7 @@ public class AckMessage {
 	}
 	
 	public String toString(){
-		String overhead = "MSH...\nMSA|"+ackCode+"\n";
+		String overhead = this.header.toString()+"\n"+"MSA|"+this.ackCode+"|"+this.msgControlId+"\n";
 		String err = "";
 		for(ErrSegment er : this.err){
 			err += er.toString()+"\n";

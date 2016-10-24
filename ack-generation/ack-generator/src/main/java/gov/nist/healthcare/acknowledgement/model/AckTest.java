@@ -4,8 +4,10 @@ import java.io.InputStream;
 
 import gov.nist.healthcare.acknowledgement.generation.Generator;
 import gov.nist.healthcare.matrix.model.HL7Element;
+import gov.nist.healthcare.matrix.model.MatrixView;
 import gov.nist.healthcare.matrix.model.ProfileMatrix;
 import gov.nist.healthcare.matrix.model.Severity;
+import gov.nist.healthcare.matrix.model.TraversableMatrix;
 import gov.nist.healthcare.matrix.parser.Parser;
 import gov.nist.healthcare.unified.enums.Context;
 import gov.nist.healthcare.unified.model.EnhancedReport;
@@ -31,15 +33,21 @@ public class AckTest {
 					"/files/VXU-Z22_ValueSetLibrary.xml",
 					"aa72383a-7b48-46e5-a74a-82e019591fe7", Context.Free);
 			
+			
+			MatrixView mv = prM.getView();
+			TraversableMatrix trM = new TraversableMatrix(mv);
+//			System.out.println(trM.getElement("MSH-7.1").getIndexes());
 //			System.out.println(report.to("json"));
-
+			InputStream msg = AckTest.class.getResourceAsStream("/files/msg.er7");
+			java.util.Scanner s = new java.util.Scanner(msg).useDelimiter("\\A");
+//			System.out.println(s.next());
 //			String index = prM.getIndexFor("MSH-5");
 //			HL7Element elm = prM.getElement(index);
 //			elm.getIndexes().map.put("USAGE", Severity.Alert);
 			
 			System.out.println(prM.toJson());
 			Generator g = new Generator();
-//			AckMessage m = g.generateAck(report, prM);
+			AckMessage m = g.generateAck(report, trM,s.next());
 			
 //			System.out.println(m);
 		} catch (Exception e) {

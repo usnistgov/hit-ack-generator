@@ -6,18 +6,15 @@ angular.module('webappApp').directive('matrixEditor', function() {
 		restrict : 'E',
 		scope	 : {
 			matrix  : "=",
-			headers : "=",
-			controls   : "="
+			headers : "="
 		},
 		bindToController: true,
-		link : function postLink(scope, element, attrs) {
-			
-		},
 		controllerAs: 'meCtrl',
-		controller : function($scope,ngTreetableParams, $http) {
+		controller : function($scope,ngTreetableParams, matrixHandler) {
 					
 			var ctrl = this;
 			
+			this.clear = matrixHandler.clearCategory;
 			
 			this.getValue = function(node, head) {
 				if (node.indexes && node.indexes.hasOwnProperty(head)) {
@@ -27,23 +24,79 @@ angular.module('webappApp').directive('matrixEditor', function() {
 				}
 			};
 
+			this.setToWPath = function(path,category, code, matrix){
+				for(var i in matrix) {
+    				
+    				var elm = matrix[i];
+    				
+    				if(elm.hasOwnProperty("path") && elm.path === path){
+    					if(elm.hasOwnProperty("indexes")){
+            				if(elm.indexes.hasOwnProperty(category) && elm.indexes[category] !== -1 ){
+            					elm.indexes[category] = code;
+            				}
+            			}
+    					return;
+    				}
+    				
+    				
+        			if(elm.hasOwnProperty("children") && elm.children && elm.children.length > 0) {
+        				ctrl.setToWPath(path, category, code, elm.children);
+        			}
+				}
+    		};
+    		
+			this.setToWUsage = function(usage,category, code, matrix){
+				for(var i in matrix) {
+    				
+    				var elm = matrix[i];
+    				
+    				if(elm.hasOwnProperty("usage") && elm.usage === usage){
+    					if(elm.hasOwnProperty("indexes")){
+            				if(elm.indexes.hasOwnProperty(category) && elm.indexes[category] !== -1 ){
+            					elm.indexes[category] = code;
+            				}
+            			}
+    				}
+    				
+        			if(elm.hasOwnProperty("children") && elm.children && elm.children.length > 0) {
+        				ctrl.setToWUsage(usage, category, code, elm.children);
+        			}
+				}
+    		};
+    		
+    		this.edit = function(){
+    			if(ctrl.a === "usage"){
+    				console.log("using U");
+    				console.log(ctrl.usageS);
+    				console.log(ctrl.categ);
+    				console.log(ctrl.setTo);
+    				ctrl.setToWUsage(ctrl.usageS,ctrl.categ,ctrl.setTo, ctrl.matrix);
+    			}
+    			else if(ctrl.a === "path"){
+    				console.log("using P");
+    				console.log(ctrl.path);
+    				console.log(ctrl.categ);
+    				console.log(ctrl.setTo);
+    				ctrl.setToWPath(ctrl.path,ctrl.categ,ctrl.setTo, ctrl.matrix);
+    			}
+    		};
+			
 			this.dynamic_params = new ngTreetableParams({
 				
 				getNodes : function(parent) {
-					if (parent) {
+					if (parent && parent.children) {
 						return parent.children;
 					} else {
 						return ctrl.matrix;
 					}
 				},
-				getTemplate : function(node) {
+				getTemplate : function() {
 					return 'tree_node';
 				}
 			});
 
 			this.isExpandable = function(node) {
-				console.log("TEEEST");
-				if (node && node.hasOwnProperty("children")) {
+				if (node && node.hasOwnProperty("children") && node.children) {
 					return node.children.length > 0;
 				} else {
 					return false;
@@ -75,7 +128,7 @@ angular.module('webappApp').directive('matrixEditor', function() {
 					function() {
 						return ctrl.matrix;
 					},
-					function(newValue,oldValue){
+					function(){
 						ctrl.dynamic_params.refresh();
 					}
 			);
